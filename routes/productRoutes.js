@@ -6,10 +6,12 @@ const {
   getProducts,
   getProductById,
   updateProduct,
-  deleteProduct
+  deleteProduct,
 } = require("../controllers/productController");
 
-router.post("/", addProduct);
+const { protect } = require("../middleware/authMiddleware");
+
+router.post("/", protect, addProduct);
 router.get("/", getProducts);
 router.get("/:id", getProductById);
 router.put("/:id", updateProduct);

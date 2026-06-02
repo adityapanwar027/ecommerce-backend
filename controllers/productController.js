@@ -3,13 +3,18 @@ const Product = require("../models/Product");
 // Add product
 const addProduct = async (req, res) => {
   try {
-    const product = await Product.create(req.body);
+    const product = await Product.create({
+      ...req.body,
+      image: req.file ? req.file.path : "",
+    });
 
     res.status(201).json({
       message: "Product added successfully",
       product,
     });
   } catch (error) {
+    console.log("Product Add Error:", error);
+
     res.status(500).json({
       message: "Product add failed",
       error: error.message,
@@ -17,19 +22,20 @@ const addProduct = async (req, res) => {
   }
 };
 
-// Get product
+// Get products
 const getProducts = async (req, res) => {
   try {
     const products = await Product.find();
 
     res.status(200).json(products);
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: error.message,
     });
   }
 };
-
 
 // Get single product by id
 const getProductById = async (req, res) => {
@@ -44,6 +50,8 @@ const getProductById = async (req, res) => {
 
     res.status(200).json(product);
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: error.message,
     });
@@ -53,12 +61,18 @@ const getProductById = async (req, res) => {
 // Update product
 const updateProduct = async (req, res) => {
   try {
+    const updateData = {
+      ...req.body,
+    };
+
+    if (req.file) {
+      updateData.image = req.file.path;
+    }
+
     const product = await Product.findByIdAndUpdate(
       req.params.id,
-      req.body,
-      {
-        new: true,
-      }
+      updateData,
+      { new: true }
     );
 
     if (!product) {
@@ -72,6 +86,8 @@ const updateProduct = async (req, res) => {
       product,
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: error.message,
     });
@@ -93,6 +109,8 @@ const deleteProduct = async (req, res) => {
       message: "Product deleted successfully",
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       message: error.message,
     });

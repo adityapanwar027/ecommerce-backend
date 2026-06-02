@@ -30,6 +30,15 @@ app.get("/", (req, res) => {
   res.send("E-Commerce Backend is running");
 });
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.log("Global Error:", err);
+
+  res.status(500).json({
+    message: err.message || "Server Error",
+  });
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {

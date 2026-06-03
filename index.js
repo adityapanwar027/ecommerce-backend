@@ -10,6 +10,8 @@ const cartRoutes = require("./routes/cartRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 
+const { notFound, errorHandler } = require("./middleware/errorMiddleware");
+
 const app = express();
 
 // Connect MongoDB
@@ -20,24 +22,19 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
+app.get("/", (req, res) => {
+  res.send("E-Commerce Backend is running");
+});
+
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/payment", paymentRoutes);
 
-app.get("/", (req, res) => {
-  res.send("E-Commerce Backend is running");
-});
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-  console.log("Global Error:", err);
-
-  res.status(500).json({
-    message: err.message || "Server Error",
-  });
-});
+// Error Middleware
+app.use(notFound);
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
 

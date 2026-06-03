@@ -13,7 +13,9 @@ const protect = async (req, res, next) => {
     }
 
     if (!token) {
-      return res.status(401).json({ message: "No token provided" });
+      return res.status(401).json({
+        message: "No token provided",
+      });
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -22,16 +24,25 @@ const protect = async (req, res, next) => {
 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Not authorized" });
+    res.status(401).json({
+      message: "Not authorized",
+    });
   }
 };
 
 const admin = (req, res, next) => {
+  console.log("Logged in user:", req.user);
+
   if (req.user && req.user.role === "admin") {
     next();
   } else {
-    res.status(403).json({ message: "Admin access only" });
+    res.status(403).json({
+      message: "Admin access only",
+    });
   }
 };
 
-module.exports = { protect, admin };
+module.exports = {
+  protect,
+  admin,
+};
